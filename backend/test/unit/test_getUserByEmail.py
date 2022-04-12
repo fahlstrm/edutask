@@ -14,7 +14,9 @@ def test_noAt_ValueError():
         test_email = "frah20student.bth.se" # no @
         mockedsut.get_user_by_email(test_email)
 
+
 def test_noMatchFound_true():
+    """ Test that None is returned if no user is associated to email input address """
     mockeddao = mock.MagicMock() # mock the dependency
     mockeddao.find.return_value = [] # define the behavior
     mockedsut = UserController(dao=mockeddao) # inject the dependency and instantiate an object of class UserController
@@ -34,6 +36,7 @@ def test_singleMatchFound_true():
     validationresult = mockedsut.get_user_by_email(test_email)
     assert validationresult == { "email": test_email }
 
+
 def test_severalMatchFound_true():
     """ Test that only 1st is returned when several email matches """
     mockeddao = mock.MagicMock() # mock the dependency
@@ -43,6 +46,7 @@ def test_severalMatchFound_true():
     test_email = "joki20@student.bth.se"
     validationresult = mockedsut.get_user_by_email(test_email)
     assert validationresult == {'email': 'joki20@student.bth.se', 'name': 'Johan'}
+
 
 def test_Exception_true():
     """ Test that exception is rasised """
