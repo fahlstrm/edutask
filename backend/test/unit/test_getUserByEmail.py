@@ -21,6 +21,23 @@ def test_singleMatchFound_true():
 
 
     test_email = "joki20@student.bth.se"
-    # validationresult = mockedsut.get_user_by_email(email=test_email)
     validationresult = mockedsut.get_user_by_email(test_email)
     assert validationresult == { "email": test_email }
+
+def test_severalMatchFound_true():
+    
+    mockeddao = mock.MagicMock() # mock the dependency
+    mockeddao.find.return_value = [{'email': 'joki20@student.bth.se'}, {'email': 'joki20@student.bth.se'}] # define the behavior
+    mockedsut = UserController(dao=mockeddao) # inject the dependency and instantiate an object of class UserController
+
+    test_email = "joki20@student.bth.se"
+    validationresult = mockedsut.get_user_by_email(test_email)
+    assert validationresult == { "email": test_email }
+
+def test_Exception_true():
+    mockeddao = mock.MagicMock() # mock the dependency
+    mockedsut = UserController({"shit"}) # inject the dependency and instantiate an object of class UserController
+
+    with pytest.raises(Exception):
+        test_email = "frah20@student.bth.se" # no @
+        validationresult = mockedsut.get_user_by_email(test_email)
