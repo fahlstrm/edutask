@@ -36,7 +36,7 @@ def test_severalMatchFound_true():
 
 def test_Exception_true():
     mockeddao = mock.MagicMock() # mock the dependency
-    mockedsut = UserController({"shit"}) # inject the dependency and instantiate an object of class UserController
+    mockedsut = UserController({}) # inject the dependency and instantiate an object of class UserController
 
     with pytest.raises(Exception):
         test_email = "frah20@student.bth.se" # no @
