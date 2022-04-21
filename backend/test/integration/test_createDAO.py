@@ -56,6 +56,11 @@ class TestDatabase:
         print(type(content))
         assert type(content) == dict
 
+    def test_create_ValidationTrue_name(self, sut):
+        content = sut.create({"name": "frida", "lastname": "doe"})
+        print(type(content))
+        assert content["name"] == "frida"
+
 
 
     
