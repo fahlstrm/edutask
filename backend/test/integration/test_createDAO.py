@@ -9,6 +9,8 @@ from src.util.validators import getValidator
 from src.util.daos import getDao
 from src.util.dao import DAO
 
+class WriteError(Exception):
+    pass
 
 class TestDatabase:
     """This test demonstrates the use of yield as an alternative to return, which allows to write code *after* the statement
