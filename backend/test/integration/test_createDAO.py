@@ -1,13 +1,13 @@
 import pytest
 import unittest.mock as mock
 import json, os
+import pymongo
 from unittest.mock import patch, MagicMock
 from src.util.validators import getValidator
 
 # Different SUT
 from src.util.daos import getDao
 from src.util.dao import DAO
-
 
 
 class TestDatabase:
@@ -20,29 +20,42 @@ class TestDatabase:
         self.json_string = {
                 "$jsonSchema": {
                     "bsonType": "object",
-                    "required": ["url"],
+                    "required": ["name", "lastname"],
                     "properties": {
-                        "url": {
+                        "name": {
                             "bsonType": "string",
-                            "description": "the url of a YouTube video must be determined"
+                            "description": "firstname of test user"
+                        },
+                        "lastname" : {
+                            "bsonType": "string",
+                            "description": "lastname of test user"
                         }
                     }
                 }
             }
         with open(fabricatedFileName, 'w') as outfile:
             json.dump(self.json_string, outfile)
-        
+
         # yield instead of return the system under test
-        # yield getValidator('task')
+        yield DAO(collection_name="test")
 
         # clean up the file after all tests have run
         os.remove(fabricatedFileName)
 
+        #remove the collection
+        myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+        mydb = myclient["edutask"]
+        mycol = mydb["test"]
+
+        mycol.drop()
+
 
     @pytest.mark.demo
-    def test_create(self, sut):
-        test = DAO(collection_name="test")
-        content = test.create({"url": "hej"})
-        # assert content['Name'] == self.json_string['Name']
+    def test_create_ValidationTrue(self, sut):
+        content = sut.create({"name": "frida", "lastname": "doe"})
+        print(type(content))
+        assert type(content) == dict
+
+
 
     
