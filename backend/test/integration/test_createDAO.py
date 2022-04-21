@@ -29,7 +29,12 @@ class TestDatabase:
                         "lastname" : {
                             "bsonType": "string",
                             "description": "lastname of test user"
-                        }
+                        },
+                        "email": {
+                            "bsonType": "string",
+                            "uniqueItems": True,
+                            "description": "the email address of a user must be determined"
+                        },
                     }
                 }
             }
@@ -45,21 +50,29 @@ class TestDatabase:
         #remove the collection
         myclient = pymongo.MongoClient("mongodb://localhost:27017/")
         mydb = myclient["edutask"]
-        mycol = mydb["test"]
-
-        mycol.drop()
+        testcol = mydb["test"]
+        testcol.drop()
 
 
     @pytest.mark.demo
     def test_create_ValidationTrue(self, sut):
-        content = sut.create({"name": "frida", "lastname": "doe"})
-        print(type(content))
+        """ Control that a dict/json is returned when all validates correct """
+        content = sut.create({"name": "jane", "lastname": "doe", "email": "jane.doe@test.com"})
         assert type(content) == dict
 
     def test_create_ValidationTrue_name(self, sut):
-        content = sut.create({"name": "frida", "lastname": "doe"})
-        print(type(content))
-        assert content["name"] == "frida"
+        """ Check value of key name """
+        content = sut.create({"name": "jane", "lastname": "doe", "email": "jane.doe@test.com"})
+        assert content["name"] == "jane"
+
+    
+    def test_create_incorrectbson(self, sut):
+        with pytest.raises(Exception):
+            sut.create({"name": 13, "lastname": "doe", "email": "jane.doe@test.com"})
+
+            
+
+        
 
 
 
