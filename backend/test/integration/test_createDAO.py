@@ -76,9 +76,10 @@ class TestDatabase:
             sut.create({"name": "jane", "email": "jane.doe@test.com"})
     
     def test_create_notUnique(self, sut):
+        """ Test that error raised when duplicate """
+        sut.create({"name": "test", "lastname": "doe", "email": "jane.doe@test.com"})
         with pytest.raises(Exception):
             sut.create({"name": "jane", "lastname": "doe", "email": "jane.doe@test.com"})
-            sut.create({"name": "test", "lastname": "doe", "email": "jane.doe@test.com"})
  
         
 
