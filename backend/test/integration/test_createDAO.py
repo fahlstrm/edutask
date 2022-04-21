@@ -20,7 +20,7 @@ class TestDatabase:
         self.json_string = {
                 "$jsonSchema": {
                     "bsonType": "object",
-                    "required": ["name", "lastname"],
+                    "required": ["name", "lastname", "email"],
                     "properties": {
                         "name": {
                             "bsonType": "string",
@@ -32,7 +32,6 @@ class TestDatabase:
                         },
                         "email": {
                             "bsonType": "string",
-                            "uniqueItems": True,
                             "description": "the email address of a user must be determined"
                         },
                     }
@@ -67,11 +66,20 @@ class TestDatabase:
 
     
     def test_create_incorrectbson(self, sut):
+        """ Wrong bson type of name """
         with pytest.raises(Exception):
             sut.create({"name": 13, "lastname": "doe", "email": "jane.doe@test.com"})
 
-            
-
+    def test_create_missingData(self, sut):
+        """ Missing lastname """
+        with pytest.raises(Exception):
+            sut.create({"name": "jane", "email": "jane.doe@test.com"})
+    
+    def test_create_notUnique(self, sut):
+        with pytest.raises(Exception):
+            sut.create({"name": "jane", "lastname": "doe", "email": "jane.doe@test.com"})
+            sut.create({"name": "test", "lastname": "doe", "email": "jane.doe@test.com"})
+ 
         
 
 
