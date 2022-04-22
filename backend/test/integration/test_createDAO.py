@@ -3,14 +3,12 @@ import unittest.mock as mock
 import json, os
 import pymongo
 from unittest.mock import patch, MagicMock
-from src.util.validators import getValidator
+from pymongo.errors import WriteError
 
 # Different SUT
 from src.util.daos import getDao
 from src.util.dao import DAO
 
-class WriteError(Exception):
-    pass
 
 class TestDatabase:
     """This test demonstrates the use of yield as an alternative to return, which allows to write code *after* the statement
@@ -22,7 +20,7 @@ class TestDatabase:
         self.json_string = {
                 "$jsonSchema": {
                     "bsonType": "object",
-                    "required": ["name", "lastname", "email"],
+                    "required": ["name", "lastname", "email", "activeUser"],
                     "properties": {
                         "name": {
                             "bsonType": "string",
@@ -36,6 +34,10 @@ class TestDatabase:
                             "bsonType": "string",
                             "description": "the email address of a user must be determined"
                         },
+                        "activeUser": {
+                            "bsonType": "bool",
+                            "description": "if the user are active or not"
+                        }
                     }
                 }
             }
@@ -57,31 +59,26 @@ class TestDatabase:
 
     @pytest.mark.demo
     def test_create_ValidationTrue(self, sut):
-        """ Control that a dict/json is returned when all validates correct """
-        content = sut.create({"name": "jane", "lastname": "doe", "email": "jane.doe@test.com"})
-        assert type(content) == dict
-
-    def test_create_ValidationTrue_name(self, sut):
-        """ Check value of key name """
-        content = sut.create({"name": "jane", "lastname": "doe", "email": "jane.doe@test.com"})
+        """ Control that a dict/json and correct value is returned when all validates correct """
+        content = sut.create({"name": "jane", "lastname": "doe", "email": "jane.doe@test.com", "activeUser": True})
+        assert type(content) == dict 
         assert content["name"] == "jane"
-
     
     def test_create_incorrectbson(self, sut):
         """ Wrong bson type of name """
-        with pytest.raises(Exception):
-            sut.create({"name": 13, "lastname": "doe", "email": "jane.doe@test.com"})
+        with pytest.raises(WriteError):
+            sut.create({"name": 13, "lastname": "doe", "email": "jane.doe@test.com", "activeUser": True})
 
     def test_create_missingData(self, sut):
         """ Missing lastname """
-        with pytest.raises(Exception):
+        with pytest.raises(WriteError):
             sut.create({"name": "jane", "email": "jane.doe@test.com"})
     
     def test_create_notUnique(self, sut):
         """ Test that error raised when duplicate """
-        sut.create({"name": "test", "lastname": "doe", "email": "jane.doe@test.com"})
-        with pytest.raises(Exception):
-            sut.create({"name": "jane", "lastname": "doe", "email": "jane.doe@test.com"})
+        sut.create({"name": "test", "lastname": "doe", "email": "jane.doe@test.com", "activeUser": True})
+        with pytest.raises(WriteError):
+            sut.create({"name": "jane", "lastname": "doe", "email": "jane.doe@test.com", "activeUser": True})
  
         
 
