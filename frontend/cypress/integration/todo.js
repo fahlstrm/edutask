@@ -20,10 +20,17 @@ describe('Todo', () => {
 
             //Control first page
             cy.get('h1').should('contain.text', `Your tasks, ${user.firstName} ${user.lastName}`)
+
+            //Select first task
+            cy.get('a img:first').click()
         })
     })
 
 
-    it('Login', () => {
+    it('Add Task', () => {
+        //Get the form by class inline-form, type in the input field 
+        cy.get('.inline-form').type("This is a test")
+
+        cy.get('.inline-form').submit()
     })
 })
