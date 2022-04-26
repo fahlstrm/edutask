@@ -27,10 +27,11 @@ describe('Todo', () => {
     })
 
 
-    it('Add Task', () => {
+    it('Add Task, input complete', () => {
         //Get the form by class inline-form, type in the input field 
         cy.get('.inline-form').type("This is a test")
 
+        //Submit the form
         cy.get('.inline-form').submit()
     })
 })
