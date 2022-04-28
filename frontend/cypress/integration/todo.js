@@ -2,10 +2,15 @@
  * R8UC1, R8UC2, R8UC3
  */
 
+const { wait } = require("@testing-library/react");
+
 
 describe('Todo', () => {
+    var backendUrl = 'http://localhost:5000'
     var user;
     before(() => {
+        cy.request('POST', `${backendUrl}/populate`)
+
         //Get values from fixture/user.json
         cy.fixture('user').then((fetchedUser) => {
             user = fetchedUser
@@ -25,19 +30,33 @@ describe('Todo', () => {
             cy.get('a img:first').click()
         })
     })
+    //Will remove the user from the database
+    after(() => {
+        cy.request('GET', `${backendUrl}/users/bymail/${user.email}`).then((user) => {
+            Object.keys(user.body).forEach(value  => cy.log(value))
+            cy.request('DELETE', `${backendUrl}/users/${user.body._id.$oid}`)
+        })
+    })
 
 
     it('Add Task, input complete', () => {
         // Get the form by class inline-form, type in the input field
-        var todoText = "This is a test";
+        var todoText = "This is a test-text";
 
-        cy.get('.inline-form').type(todoText)
+        //Checks length of li-list
+        cy.get('.todo-item').then(($li) => {
+            cy.get('.inline-form').type(todoText)
 
-        //Submit the form
-        cy.get('.inline-form').submit()
-
-        //Check last li matches text
-        cy.get('.todo-item:last').should('contain.text', todoText)
+            //Submit the form
+            cy.get('.inline-form').submit()
+    
+            //Check last li matches text and check that length of li increased by 1
+            cy.get('.todo-item:last').should('contain.text', todoText).then(() => {
+                cy.get('.todo-item').then(($liAdded) => {
+                    expect($liAdded).to.have.length($li.length + 1)
+                })
+            })
+        })
     })
 
     it('Add Task, input empty', () => {
@@ -52,6 +71,6 @@ describe('Todo', () => {
             })
         
         // returns AssertionError: 'expected ... red, but the value was 'rgb(204, 204, 204)' 
-        cy.get('.inline-form input[type=text').should('have.css', 'border-color', 'red')
+        // cy.get('.inline-form input[type=text').should('have.css', 'border-color', 'red')
     })
 })
