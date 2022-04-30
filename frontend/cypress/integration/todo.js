@@ -8,184 +8,288 @@ var backendUrl = 'http://localhost:5000'
 var user; 
 
 
-// describe('R8UC1 Todo input', () => {
-//     beforeEach(() => {
-//         cy.request('POST', `${backendUrl}/populate`)
-
-    //     //Get values from fixture/user.json
-    //     cy.fixture('user').then((fetchedUser) => {
-    //     user = fetchedUser
-        
-    //     //Load the page, assert that it is the landing page
-    //     cy.visit(frontendUrl)
-    //     cy.get('h1').should('contain.text', 'Login')
-
-    //     //Login
-    //     cy.contains('div', 'Email Address').find('input').type(user.email)
-    //     cy.get('.submit-form').submit()
-
-    //     //Control first page
-    //     cy.get('h1').should('contain.text', `Your tasks, ${user.firstName} ${user.lastName}`)
-
-    //     // //Select first task
-    //     cy.get('a img:first').click()
-    // })    
-//     })
-    
-//     afterEach(() => {
-            // cy.request('GET', `${backendUrl}/users/bymail/${user.email}`).then((user) => {
-            //     cy.request('DELETE', `${backendUrl}/users/${user.body._id.$oid}`)
-            // })
-//     })
-
-
-//     it('Add Task, input complete', () => {
-//         //Assure input field is empty before test runs, else break
-//         cy.get('.inline-form input[type=text]').should('have.value', '');
-
-//         // Get the form by class inline-form, type in the input field
-//         var todoText = "This is a test-text";
-
-//         //Checks length of li-list
-//         cy.get('.todo-item').then(($li) => {
-//             cy.get('.inline-form').type(todoText)
-
-//             //Submit the form
-//             cy.get('.inline-form').submit()
-    
-//             //Check last li matches text and check that length of li increased by 1
-//             cy.get('.todo-item:last').should('contain.text', todoText).then(() => {
-//                 cy.get('.todo-item').then(($liAdded) => {
-//                     expect($liAdded).to.have.length($li.length + 1)
-//                 })
-//             })
-//         })
-//     })
-
-//     it('Add several tasks, input complete', () => {
-//         // Amount of test/adds to do
-//         var i = 1;
-//         var tests = 2;
-//         // Get the form by class inline-form, type in the input field
-//         var todoText = "This is a test-text";
-
-//         while(i < tests) {
-//             //Assure input field is empty before test runs, else break
-//             cy.get('.inline-form input[type=text]').should('have.value', '');
-//             //Checks length of li-list
-//             cy.get('.todo-item').then(($li) => {
-//                 cy.get('.inline-form').type(todoText)
-
-//                 //Submit the form
-//                 cy.get('.inline-form').submit()
-
-//                 //Check last li matches text and check that length of li increased by 1
-//                 cy.get('.todo-item:last').should('contain.text', todoText).then(() => {
-//                     cy.get('.todo-item').then(($liAdded) => {
-//                         expect($liAdded).to.have.length($li.length + 1)
-//                     })
-//                 })
-//             })
-//             i++
-//         }
-//     })
-
-//     // it('Add Task, input empty check border', () => {
-//     //     //Get the form by class inline-form, type empty string
-//     //     cy.get('.inline-form input[type=text]').should('have.value', '');
-
-//     //     // get button, invoke disabled attribute and try to click it (force: true prevents error message in cypress)
-//     //     cy.get('.inline-form input[type=submit')
-//     //         .invoke('attr', 'disabled')
-//     //         .then(disabled =>{
-//     //             disabled ? cy.get('.inline-form input[type=submit').click({force: true}) : null
-//     //         })
-        
-//     //     // returns AssertionError: 'expected ... red, but the value was 'rgb(204, 204, 204)' 
-//     //     cy.get('.inline-form input[type=text').should('have.css', 'border-color', 'red')
-//     // })
-
-//     it('Add Task, input empty should not be added to list, alternative scenario: border should be red', () => {
-//         //Get the form by class inline-form, type empty string
-//         cy.get('.inline-form input[type=text]').should('have.value', '');
-
-//         /**
-//          * Checks length of li-list, then try to add. Length of li should be same afterwards
-//          * As per alternative scenarios border should be red
-//          */
-//         cy.get('.todo-item').then(($li) => {
-//             cy.get('.inline-form input[type=submit').click({force: true})
-//             cy.get('.todo-item').then(($liAfterClick) => {
-//                 expect($liAfterClick).to.have.length($li.length)
-//                 cy.get('.inline-form input[type=text').should('have.css', 'border-color', 'red')
-
-//             })
-//         })
-
-//     })
-// })
-
-describe('R8UC2 Todo toggle', () => {
+describe('R8UC1 Todo input', () => {
+    // BEFORE EVERY IT()-TEST, CLOSE EVENTUAL WINDOW AND LOGOUT, THEN LOGIN AND SELECT FIRST TASK 
     beforeEach(() => {
-        cy.request('POST', `${backendUrl}/populate`)
-
-        //Get values from fixture/user.json
-        cy.fixture('user').then((fetchedUser) => {
-            user = fetchedUser
-            
-            //Load the page, assert that it is the landing page
-            cy.visit(frontendUrl)
-            cy.get('h1').should('contain.text', 'Login')
-    
-            //Login
-            cy.contains('div', 'Email Address').find('input').type(user.email)
-            cy.get('.submit-form').submit()
-    
-            //Control first page
-            cy.get('h1').should('contain.text', `Your tasks, ${user.firstName} ${user.lastName}`)
-    
-            // //Select first task
-            cy.get('a img:first').click()
+        // if a test not resetted because of a failure, check for close-btn and log out
+        cy.get('body').then($body => {
+            if ($body.find('.close-btn:first').length > 0) {
+                // close window
+                cy.get('.close-btn:first').click()
+                .then(() => {
+                    // click login arrow button
+                    cy.get('a.icon-button:first').click()
+                })
+                .then(() => {
+                    // log out
+                    cy.get('span.icon-button:first').click()
+                })
+            }
         })
-    })
-    afterEach(() => {
+
+        // Get values from fixture/user.json
+        cy.fixture('user').then((fetchedUser) => {
+        user = fetchedUser
+
+        // get user by mail
         cy.request('GET', `${backendUrl}/users/bymail/${user.email}`).then((user) => {
+            // delete user by id
             cy.request('DELETE', `${backendUrl}/users/${user.body._id.$oid}`)
         })
+        
+        // populate db with an initial user and some tasks
+        cy.request('POST', `${backendUrl}/populate`)
+
+        // Get values from fixture/user.json
+        cy.fixture('user').then((fetchedUser) => {
+        user = fetchedUser
+        
+        // Load page, assert it is landing page
+        cy.visit(frontendUrl)
+        cy.get('h1').should('contain.text', 'Login')
+
+        // Login
+        cy.contains('div', 'Email Address').find('input').type(user.email)
+        cy.get('.submit-form').submit()
+
+        // Control first page
+        cy.get('h1').should('contain.text', `Your tasks, ${user.firstName} ${user.lastName}`)
+
+        // //Select first task
+        cy.get('a img:first').click()
+
+        })
+    })    
     })
+    
 
+    it('Add Task, input complete', () => {
+        //Assure input field is empty before test runs, else break
+        cy.get('.inline-form input[type=text]').should('have.value', '');
 
-    it('Activate item to done', () => {
-        /**
-         * Make sure its unchecked and then proceed with test
-         * Click the icon
-         * Expect the class of the element is toggled from 'checked unchecked' to 'checked checked'
-         */ 
-        cy.get('.todo-item').eq(0).find('.unchecked').click()
-        cy.wait(2000).then(() => {
-            cy.get('.todo-item').eq(0).find('.checker').then(($icon) => {
-                expect($icon[0].className).to.match(/checker checked/)
+        // Get the form by class inline-form, type in the input field
+        var todoText = "This is a test-text";
+
+        //Checks length of li-list ($li is array of all li elements)
+        cy.get('.todo-item').then(($li) => {
+            // type todoText
+            cy.get('.inline-form').type(todoText)
+
+            //Submit form
+            cy.get('.inline-form').submit()
+    
+            //Check last li matches text and check that length of li array ($liAdded) increased by 1
+            cy.get('.todo-item:last').should('contain.text', todoText).then(() => {
+                cy.get('.todo-item').then(($liAdded) => {
+                    expect($liAdded).to.have.length($li.length + 1)
+                })
             })
         })
-        
-        // then(($icon) => {
-        //     $icon.dblclick()
-        //     cy.wait(2000).then(() => {
-        //         cy.get($icon).then(() => {
-        //             expect($icon[0].className).to.match(/checker checked/)
-        //         })
-        //     })
-           
-        // })   
     })
 
-    // it('Should re-activate done todo', () => {
-    //     cy.get('.todo-item').eq(0).find('.checker unchecked').dblclick()
-    //     cy.wait(2000).then(() => {
-       
-    //     })
+    // it('Add several tasks, input complete', () => {
+    //     // Amount of test/adds to do
+    //     var i = 1;
+    //     var tests = 2;
+    //     // Get the form by class inline-form, type in the input field
+    //     var todoText = "This is a test-text";
 
+    //     while(i < tests) {
+    //         // Assure input field is empty before test runs, else break
+    //         cy.get('.inline-form input[type=text]').should('have.value', '');
+    //         // Checks length of li-list
+    //         cy.get('.todo-item').then(($li) => {
+    //             cy.get('.inline-form').type(todoText)
+
+    //             // Submit the form
+    //             cy.get('.inline-form').submit()
+
+    //             // Check last li matches text and check that length of li increased by 1
+    //             cy.get('.todo-item:last').should('contain.text', todoText).then(() => {
+    //                 cy.get('.todo-item').then(($liAdded) => {
+    //                     expect($liAdded).to.have.length($li.length + 1)
+    //                 })
+    //             })
+    //         })
+    //         i++
+    //     }
     // })
 
+    it('Add Task, input empty should not be added to list, alternative scenario: border should be red', () => {
+        // Get the form by class inline-form, type empty string
+        cy.get('.inline-form input[type=text]').should('have.value', '');
+
+        /**
+         * Checks length of li-list, then try to add. Length of li should be same afterwards
+         * As per alternative scenarios border should be red
+         */
+        cy.get('.todo-item').then(($li) => {
+            // submit (force: true prevents error message in cypress)
+            cy.get('.inline-form input[type=submit').click({force: true})
+            // get array of li
+            cy.get('.todo-item').then(($liAfterClick) => {
+                // check li array is same length as before
+                expect($liAfterClick).to.have.length($li.length)
+                // ASSERTIONERROR: check border is red
+                cy.get('.inline-form input[type=text').should('have.css', 'border-color', 'red')
+
+            })
+        })
+    })
+})
+
+describe('R8UC2 Todo toggle', () => {
+    // BEFORE EVERY IT()-TEST, CLOSE EVENTUAL WINDOW AND LOGOUT, THEN LOGIN AND SELECT FIRST TASK 
+    beforeEach(() => {
+        // if a test not resetted because of a failure, check for close-btn and log out
+        cy.get('body').then($body => {
+            if ($body.find('.close-btn:first').length > 0) {
+                // close window
+                cy.get('.close-btn:first').click()
+                .then(() => {
+                    // click login arrow button
+                    cy.get('a.icon-button:first').click()
+                })
+                .then(() => {
+                    // log out
+                    cy.get('span.icon-button:first').click()
+                })
+            }
+        })
+
+        // Get values from fixture/user.json
+        cy.fixture('user').then((fetchedUser) => {
+        user = fetchedUser
+
+        // get user by mail
+        cy.request('GET', `${backendUrl}/users/bymail/${user.email}`).then((user) => {
+            // delete user by id
+            cy.request('DELETE', `${backendUrl}/users/${user.body._id.$oid}`)
+        })
+        
+        // populate db with an initial user and some tasks
+        cy.request('POST', `${backendUrl}/populate`)
+
+        // Get values from fixture/user.json
+        cy.fixture('user').then((fetchedUser) => {
+        user = fetchedUser
+        
+        // Load page, assert it is landing page
+        cy.visit(frontendUrl)
+        cy.get('h1').should('contain.text', 'Login')
+
+        // Login
+        cy.contains('div', 'Email Address').find('input').type(user.email)
+        cy.get('.submit-form').submit()
+
+        // Control first page
+        cy.get('h1').should('contain.text', `Your tasks, ${user.firstName} ${user.lastName}`)
+
+        // //Select first task
+        cy.get('a img:first').click()
+
+        })
+    })    
+    })
+    
+
+    it('Set item to done', () => {
+        // ASSERTIONERROR: Expect class to go from 'checker unchecked' to 'checker checked'
+        cy.get('.checker:first').click().then(() => {
+            cy.get('.checker:first').should('have.class', 'checker checked')
+        })
+    })
+
+    it('Uncheck item', () => {
+        // Double click needed to strike through
+        cy.get('.checker:first').click()
+        cy.get('.checker:first').click()
+        .then(() => {
+            cy.wait(2000)
+            cy.get('.checker:first').click()
+            .then(() => {
+                // assert checker is unchecked
+                cy.get('.checker:first').should('have.class', 'checker unchecked')
+            })
+        })
+
+
+    })
+})
+
+
+
+
+describe('R8UC3 Delete todo', () => {
+    // BEFORE EVERY IT()-TEST, CLOSE EVENTUAL WINDOW AND LOGOUT, THEN LOGIN AND SELECT FIRST TASK 
+    beforeEach(() => {
+        // if a test not resetted because of a failure, check for close-btn and log out
+        cy.get('body').then($body => {
+            if ($body.find('.close-btn:first').length > 0) {
+                // close window
+                cy.get('.close-btn:first').click()
+                .then(() => {
+                    // click login arrow button
+                    cy.get('a.icon-button:first').click()
+                })
+                .then(() => {
+                    // log out
+                    cy.get('span.icon-button:first').click()
+                })
+            }
+        })
+
+        // Get values from fixture/user.json
+        cy.fixture('user').then((fetchedUser) => {
+        user = fetchedUser
+
+        // get user by mail
+        cy.request('GET', `${backendUrl}/users/bymail/${user.email}`).then((user) => {
+            // delete user by id
+            cy.request('DELETE', `${backendUrl}/users/${user.body._id.$oid}`)
+        })
+        
+        // populate db with an initial user and some tasks
+        cy.request('POST', `${backendUrl}/populate`)
+
+        // Get values from fixture/user.json
+        cy.fixture('user').then((fetchedUser) => {
+        user = fetchedUser
+        
+        // Load page, assert it is landing page
+        cy.visit(frontendUrl)
+        cy.get('h1').should('contain.text', 'Login')
+
+        // Login
+        cy.contains('div', 'Email Address').find('input').type(user.email)
+        cy.get('.submit-form').submit()
+
+        // Control first page
+        cy.get('h1').should('contain.text', `Your tasks, ${user.firstName} ${user.lastName}`)
+
+        // //Select first task
+        cy.get('a img:first').click()
+
+        })
+    })    
+    })
+    
+
+    it('Delete todo', () => {
+        /**
+         * Checks length of li-list, then try to delete.
+         * Length of li should be one less afterwards
+         */
+
+        // ASSERTIONERROR: get all li, click to delete, then compare old and new li array
+        cy.get('.todo-item').then(($liArray) => {
+            cy.get('.todo-item').eq(1).find('.remover').click().then(() => {
+                cy.get('.todo-item').then(($shorterLiArray) => {
+                    expect($shorterLiArray).to.have.length($liArray.length - 1)
+                })
+            })
+        })
+
+    })
 
 })
