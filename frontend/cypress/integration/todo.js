@@ -29,37 +29,37 @@ describe('R8UC1 Todo input', () => {
 
         // Get values from fixture/user.json
         cy.fixture('user').then((fetchedUser) => {
-        user = fetchedUser
+            user = fetchedUser
 
-        // get user by mail
-        cy.request('GET', `${backendUrl}/users/bymail/${user.email}`).then((user) => {
-            // delete user by id
-            cy.request('DELETE', `${backendUrl}/users/${user.body._id.$oid}`)
-        })
-        
-        // populate db with an initial user and some tasks
-        cy.request('POST', `${backendUrl}/populate`)
+            // get user by mail
+            cy.request('GET', `${backendUrl}/users/bymail/${user.email}`).then((user) => {
+                // delete user by id
+                cy.request('DELETE', `${backendUrl}/users/${user.body._id.$oid}`)
+            })
+            
+            // populate db with an initial user and some tasks
+            cy.request('POST', `${backendUrl}/populate`)
 
-        // Get values from fixture/user.json
-        cy.fixture('user').then((fetchedUser) => {
-        user = fetchedUser
-        
-        // Load page, assert it is landing page
-        cy.visit(frontendUrl)
-        cy.get('h1').should('contain.text', 'Login')
+            // Get values from fixture/user.json
+            cy.fixture('user').then((fetchedUser) => {
+            user = fetchedUser
+            
+            // Load page, assert it is landing page
+            cy.visit(frontendUrl)
+            cy.get('h1').should('contain.text', 'Login')
 
-        // Login
-        cy.contains('div', 'Email Address').find('input').type(user.email)
-        cy.get('.submit-form').submit()
+            // Login
+            cy.contains('div', 'Email Address').find('input').type(user.email)
+            cy.get('.submit-form').submit()
 
-        // Control first page
-        cy.get('h1').should('contain.text', `Your tasks, ${user.firstName} ${user.lastName}`)
+            // Control first page
+            cy.get('h1').should('contain.text', `Your tasks, ${user.firstName} ${user.lastName}`)
 
-        // //Select first task
-        cy.get('a img:first').click()
+            // //Select first task
+            cy.get('a img:first').click()
 
-        })
-    })    
+            })
+        })    
     })
     
 
@@ -86,34 +86,6 @@ describe('R8UC1 Todo input', () => {
             })
         })
     })
-
-    // it('Add several tasks, input complete', () => {
-    //     // Amount of test/adds to do
-    //     var i = 1;
-    //     var tests = 2;
-    //     // Get the form by class inline-form, type in the input field
-    //     var todoText = "This is a test-text";
-
-    //     while(i < tests) {
-    //         // Assure input field is empty before test runs, else break
-    //         cy.get('.inline-form input[type=text]').should('have.value', '');
-    //         // Checks length of li-list
-    //         cy.get('.todo-item').then(($li) => {
-    //             cy.get('.inline-form').type(todoText)
-
-    //             // Submit the form
-    //             cy.get('.inline-form').submit()
-
-    //             // Check last li matches text and check that length of li increased by 1
-    //             cy.get('.todo-item:last').should('contain.text', todoText).then(() => {
-    //                 cy.get('.todo-item').then(($liAdded) => {
-    //                     expect($liAdded).to.have.length($li.length + 1)
-    //                 })
-    //             })
-    //         })
-    //         i++
-    //     }
-    // })
 
     it('Add Task, input empty should not be added to list, alternative scenario: border should be red', () => {
         // Get the form by class inline-form, type empty string
@@ -159,37 +131,37 @@ describe('R8UC2 Todo toggle', () => {
 
         // Get values from fixture/user.json
         cy.fixture('user').then((fetchedUser) => {
-        user = fetchedUser
+            user = fetchedUser
 
-        // get user by mail
-        cy.request('GET', `${backendUrl}/users/bymail/${user.email}`).then((user) => {
-            // delete user by id
-            cy.request('DELETE', `${backendUrl}/users/${user.body._id.$oid}`)
-        })
-        
-        // populate db with an initial user and some tasks
-        cy.request('POST', `${backendUrl}/populate`)
+            // get user by mail
+            cy.request('GET', `${backendUrl}/users/bymail/${user.email}`).then((user) => {
+                // delete user by id
+                cy.request('DELETE', `${backendUrl}/users/${user.body._id.$oid}`)
+            })
+            
+            // populate db with an initial user and some tasks
+            cy.request('POST', `${backendUrl}/populate`)
 
-        // Get values from fixture/user.json
-        cy.fixture('user').then((fetchedUser) => {
-        user = fetchedUser
-        
-        // Load page, assert it is landing page
-        cy.visit(frontendUrl)
-        cy.get('h1').should('contain.text', 'Login')
+            // Get values from fixture/user.json
+            cy.fixture('user').then((fetchedUser) => {
+            user = fetchedUser
+            
+            // Load page, assert it is landing page
+            cy.visit(frontendUrl)
+            cy.get('h1').should('contain.text', 'Login')
 
-        // Login
-        cy.contains('div', 'Email Address').find('input').type(user.email)
-        cy.get('.submit-form').submit()
+            // Login
+            cy.contains('div', 'Email Address').find('input').type(user.email)
+            cy.get('.submit-form').submit()
 
-        // Control first page
-        cy.get('h1').should('contain.text', `Your tasks, ${user.firstName} ${user.lastName}`)
+            // Control first page
+            cy.get('h1').should('contain.text', `Your tasks, ${user.firstName} ${user.lastName}`)
 
-        // //Select first task
-        cy.get('a img:first').click()
+            // //Select first task
+            cy.get('a img:first').click()
 
-        })
-    })    
+            })
+        })    
     })
     
 
@@ -212,12 +184,8 @@ describe('R8UC2 Todo toggle', () => {
                 cy.get('.checker:first').should('have.class', 'checker unchecked')
             })
         })
-
-
     })
 })
-
-
 
 
 describe('R8UC3 Delete todo', () => {
@@ -241,37 +209,37 @@ describe('R8UC3 Delete todo', () => {
 
         // Get values from fixture/user.json
         cy.fixture('user').then((fetchedUser) => {
-        user = fetchedUser
+            user = fetchedUser
 
-        // get user by mail
-        cy.request('GET', `${backendUrl}/users/bymail/${user.email}`).then((user) => {
-            // delete user by id
-            cy.request('DELETE', `${backendUrl}/users/${user.body._id.$oid}`)
-        })
-        
-        // populate db with an initial user and some tasks
-        cy.request('POST', `${backendUrl}/populate`)
+            // get user by mail
+            cy.request('GET', `${backendUrl}/users/bymail/${user.email}`).then((user) => {
+                // delete user by id
+                cy.request('DELETE', `${backendUrl}/users/${user.body._id.$oid}`)
+            })
+            
+            // populate db with an initial user and some tasks
+            cy.request('POST', `${backendUrl}/populate`)
 
-        // Get values from fixture/user.json
-        cy.fixture('user').then((fetchedUser) => {
-        user = fetchedUser
-        
-        // Load page, assert it is landing page
-        cy.visit(frontendUrl)
-        cy.get('h1').should('contain.text', 'Login')
+            // Get values from fixture/user.json
+            cy.fixture('user').then((fetchedUser) => {
+            user = fetchedUser
+            
+            // Load page, assert it is landing page
+            cy.visit(frontendUrl)
+            cy.get('h1').should('contain.text', 'Login')
 
-        // Login
-        cy.contains('div', 'Email Address').find('input').type(user.email)
-        cy.get('.submit-form').submit()
+            // Login
+            cy.contains('div', 'Email Address').find('input').type(user.email)
+            cy.get('.submit-form').submit()
 
-        // Control first page
-        cy.get('h1').should('contain.text', `Your tasks, ${user.firstName} ${user.lastName}`)
+            // Control first page
+            cy.get('h1').should('contain.text', `Your tasks, ${user.firstName} ${user.lastName}`)
 
-        // //Select first task
-        cy.get('a img:first').click()
+            // //Select first task
+            cy.get('a img:first').click()
 
-        })
-    })    
+            })
+        })    
     })
     
 
@@ -293,3 +261,33 @@ describe('R8UC3 Delete todo', () => {
     })
 
 })
+
+
+
+// it('Add several tasks, input complete', () => {
+//     // Amount of test/adds to do
+//     var i = 1;
+//     var tests = 3;
+//     // Get the form by class inline-form, type in the input field
+//     var todoText = "This is a test-text";
+
+//     while(i < tests) {
+//         // Assure input field is empty before test runs, else break
+//         cy.get('.inline-form input[type=text]').should('have.value', '');
+//         // Checks length of li-list
+//         cy.get('.todo-item').then(($li) => {
+//             cy.get('.inline-form').type(todoText)
+
+//             // Submit the form
+//             cy.get('.inline-form').submit()
+
+//             // Check last li matches text and check that length of li increased by 1
+//             cy.get('.todo-item:last').should('contain.text', todoText).then(() => {
+//                 cy.get('.todo-item').then(($liAdded) => {
+//                     expect($liAdded).to.have.length($li.length + 1)
+//                 })
+//             })
+//         })
+//         i++
+//     }
+// })
