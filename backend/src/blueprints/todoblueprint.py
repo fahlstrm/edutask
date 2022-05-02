@@ -18,6 +18,7 @@ todo_blueprint = Blueprint('todo_blueprint', __name__)
 def create():
     try:
         data = request.form.to_dict(flat=True)
+        print(data)
         todo = controller.create(data)
         return jsonify(todo), 200
     except WriteError as e:
